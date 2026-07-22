@@ -68,7 +68,7 @@
 > [!TIP]
 > 推荐通过 [OpenChamber](https://github.com/openchamber/openchamber) 使用 OpenCode。
 
-![运行界面](./img/basic.png)
+![运行界面](./img/openchamber.png)
 
 ## 编排流程
 

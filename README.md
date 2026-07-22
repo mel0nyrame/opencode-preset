@@ -68,7 +68,7 @@ This repository keeps some `@latest` dependency references to quickly follow ups
 > [!TIP]
 > We recommend using OpenCode through [OpenChamber](https://github.com/openchamber/openchamber).
 
-![Running interface](./img/basic.png)
+![Running interface](./img/openchamber.png)
 
 ## Orchestration Flow
 
