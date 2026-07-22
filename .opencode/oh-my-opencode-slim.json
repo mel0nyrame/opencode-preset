@@ -1,0 +1,165 @@
+{
+  "$schema": "https://unpkg.com/oh-my-opencode-slim@latest/oh-my-opencode-slim.schema.json",
+  "agents": {
+    "fast-generic": {
+      "mcps": [],
+      "model": "opencode-go/deepseek-v4-flash",
+      "orchestratorPrompt": "Delegate to @fast-generic for routine mechanical command work: git status/diff/log reconnaissance, normal commit preparation, creating commits, pushing commits, and no-edit command validation such as lint, typecheck, static verification, tests, builds, or package-manager equivalents. Ask it to inspect diffs before committing, stage only intended files, avoid secrets, preserve repository commit-message style, and report final commit hashes or push results. Do not use it for code edits, design work, architecture, debugging strategy, docs research, or destructive git history operations such as amend, rebase, reset --hard, clean, force-push, or deleting branches unless the user explicitly requested that exact operation.",
+      "prompt": "You are a fast generic execution agent for routine mechanical command work. Run requested shell commands, inspect results, and report concise outcomes. For git commits or pushes, inspect git status, git diff, and recent log first; stage only intended files; avoid secrets; preserve repository commit-message style; never amend, rebase, reset --hard, clean, force-push, delete branches, or perform destructive history operations unless the user explicitly requested that exact operation. Do not edit code or make architecture/design decisions.",
+      "skills": [],
+      "variant": "low"
+    }
+  },
+  "companion": {
+    "enabled": false,
+    "position": "bottom-left",
+    "size": "small"
+  },
+  "council": {
+    "councillor_execution_mode": "parallel",
+    "councillor_retries": 3,
+    "default_preset": "default",
+    "presets": {
+      "default": {
+        "alpha": {
+          "model": "opencode-go/glm-5.2",
+          "prompt": "Focus on overall architecture, correctness, and integration with existing systems."
+        },
+        "beta": {
+          "model": "opencode-go/kimi-k2.7-code",
+          "prompt": "Focus on code quality, implementation details, and edge cases."
+        },
+        "gamma": {
+          "model": "opencode-go/kimi-k2.6",
+          "prompt": "Focus on performance, resource usage, and practical trade-offs."
+        }
+      }
+    },
+    "timeout": 180000
+  },
+  "disabled_agents": [],
+  "preset": "me",
+  "presets": {
+    "me": {
+      "council": {
+        "mcps": [
+          "codegraph"
+        ],
+        "model": "opencode-go/qwen3.7-max",
+        "skills": [
+          "adhd",
+          "simplify"
+        ],
+        "variant": "high"
+      },
+      "designer": {
+        "mcps": [
+          "codegraph",
+          "officecli"
+        ],
+        "model": "opencode-go/kimi-k2.7-code",
+        "skills": [
+          "vue",
+          "nuxt",
+          "marketing-psychology",
+          "icon-set-generator",
+          "product-discovery",
+          "karpathy-guidelines",
+          "officecli",
+          "officecli-pptx",
+          "officecli-pitch-deck",
+          "officecli-data-dashboard",
+          "morph-ppt",
+          "morph-ppt-3d",
+          "make-interfaces-feel-better"
+        ]
+      },
+      "explorer": {
+        "mcps": [
+          "codegraph"
+        ],
+        "model": "opencode-go/deepseek-v4-flash",
+        "skills": [],
+        "variant": "low"
+      },
+      "fixer": {
+        "mcps": [
+          "codegraph",
+          "websearch",
+          "officecli"
+        ],
+        "model": "opencode-go/kimi-k2.7-code",
+        "skills": [
+          "pnpm",
+          "vite",
+          "tsdown",
+          "vitest",
+          "karpathy-guidelines",
+          "worktrees",
+          "clonedeps",
+          "release-smoke-test",
+          "officecli",
+          "officecli-docx",
+          "officecli-xlsx",
+          "officecli-word-form",
+          "officecli-academic-paper",
+          "officecli-financial-model"
+        ],
+        "variant": "high"
+      },
+      "librarian": {
+        "mcps": [
+          "websearch",
+          "context7",
+          "gh_grep"
+        ],
+        "model": "opencode-go/deepseek-v4-flash",
+        "skills": [
+          "product-discovery"
+        ],
+        "variant": "low"
+      },
+      "observer": {
+        "mcps": [],
+        "model": "zhipuai/glm-4.6v",
+        "skills": []
+      },
+      "oracle": {
+        "mcps": [
+          "codegraph",
+          "websearch"
+        ],
+        "model": "opencode-go/qwen3.7-max",
+        "skills": [
+          "simplify",
+          "workers-best-practices",
+          "adhd",
+          "karpathy-guidelines"
+        ],
+        "variant": "high"
+      },
+      "orchestrator": {
+        "mcps": [
+          "codegraph"
+        ],
+        "model": "kimi-for-coding/k3",
+        "skills": [
+          "codemap",
+          "deepwork",
+          "verification-planning",
+          "worktrees",
+          "clonedeps",
+          "reflect",
+          "customize-opencode",
+          "oh-my-opencode-slim"
+        ]
+      }
+    }
+  },
+  "showStartupToast": false,
+  "multiplexer": {
+    "type": "auto",
+    "layout": "main-vertical",
+    "main_pane_size": 60
+  }
+}

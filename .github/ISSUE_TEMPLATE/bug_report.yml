@@ -1,0 +1,77 @@
+name: Bug 报告
+description: 报告预设、Skill、Command 或配置的问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 在提交前
+
+        - 请先搜索已有 Issue，避免重复。
+        - 不要在此提交 API Key、Token、个人绝对路径或私仓信息。
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 简洁描述你遇到的 Bug。
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      description: 如何稳定触发该问题。
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期行为
+      description: 你期望发生什么。
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 实际发生了什么。
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境与版本
+      description: OpenCode 版本、Preset commit/分支、操作系统、相关 MCP/Skill。
+      placeholder: |
+        OpenCode: ...
+        Preset: ...
+        OS: ...
+        相关 MCP/Skill: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志或截图
+      description: 如有错误日志，请贴出关键片段并脱敏。
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 附加信息
+      description: 其他有助于定位问题的上下文。
+    validations:
+      required: false

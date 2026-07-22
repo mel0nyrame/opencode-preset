@@ -1,0 +1,24 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local dependencies
+node_modules/
+vendor/
+
+# Environment and local overrides
+.env
+.env.*
+!.env.example
+*.local
+
+# Build output, logs, and temporary files
+dist/
+tmp/
+*.log
