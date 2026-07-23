@@ -8,15 +8,17 @@ Agent、模型、Skills 和 MCP 的权威配置位于 `.opencode/oh-my-opencode-
 
 ## 目录
 
-- [Orchestrator](#orchestrator)
-- [Designer](#designer)
-- [Explorer](#explorer)
-- [Fixer](#fixer)
-- [Librarian](#librarian)
-- [Observer](#observer)
-- [Oracle](#oracle)
-- [Council](#council)
-- [Fast-Generic](#fast-generic)
+- [Agent 配置说明](#agent-配置说明)
+  - [目录](#目录)
+  - [Orchestrator](#orchestrator)
+  - [Designer](#designer)
+  - [Explorer](#explorer)
+  - [Fixer](#fixer)
+  - [Librarian](#librarian)
+  - [Observer](#observer)
+  - [Oracle](#oracle)
+  - [Council](#council)
+  - [Fast-Generic](#fast-generic)
 
 ---
 
@@ -26,14 +28,10 @@ Agent、模型、Skills 和 MCP 的权威配置位于 `.opencode/oh-my-opencode-
 - 定位：规划、调度、依赖管理、结果整合和验收
 - MCP：`codegraph`
 - 主要 Skills：
-  - `codemap`
-  - `deepwork`
-  - `verification-planning`
-  - `worktrees`
-  - `clonedeps`
-  - `reflect`
-  - `customize-opencode`
-  - `oh-my-opencode-slim`
+  - `*`
+  - `!simplify`
+
+> 让 Orchestrator 知道全部skill，可以在委派任务的时候明确指出提出调用提高效率
 
 ## Designer
 
