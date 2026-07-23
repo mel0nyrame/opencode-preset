@@ -1,121 +1,99 @@
-# OpenCode Preset
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="OpenCode Preset 将任务交给专业 Agent，并通过验证关卡完成交付">
+</p>
 
-[English](./README.md)
+<p align="center">
+  <strong>面向 OpenCode 的多 Agent 编排预设。</strong><br>
+  让主会话保持专注，由专业 Agent 分别处理代码检索、外部调研、设计、实现、媒体分析和高风险审查。
+</p>
 
-![OpenCode Preset 运行界面](./img/basic.png)
-
-> 面向复杂软件工程任务的 OpenCode 多 Agent 编排预设。
-
-本预设通过划分职责边界、并行委派、验证流程和 MCP 工具，把代码检索、实现、外部研究、设计与审查分配给不同角色，避免主 Agent 独自处理全部工作并迅速消耗上下文。
-
-> [!IMPORTANT]
-> 这是一份带有个人偏好的配置预设，不是开箱即用的通用发行版。默认模型、Provider 和可选工具需要按你的环境调整。
+<p align="center">
+  <a href="./README.md">English</a> ·
+  <a href="#快速开始">快速开始</a> ·
+  <a href="./docs/installation.md">安装指南</a> ·
+  <a href="./docs/workflows.md">工作流</a> ·
+  <a href="./docs/faq.md">FAQ</a>
+</p>
 
 > [!WARNING]
-> **当前版本：v0.1.0（早期版本）**。配置接口、Agent 模型分配和 Skills 清单可能继续调整。
+> **v0.1.0 仍处于早期阶段。** 模型、Provider、可选工具和配置字段体现的是个人使用偏好，在更广泛使用前应根据自己的环境进行调整。
 
----
+## 查看预设的实际运行效果
 
-## 目录
+<p align="center">
+  <img src="./assets/basic.png" width="100%" alt="OpenCode 运行该预设时显示 Orchestrator、已连接的 MCP 工具和专业 Agent">
+</p>
 
-- [OpenCode Preset](#opencode-preset)
-  - [目录](#目录)
-  - [版本状态](#版本状态)
-  - [特性](#特性)
-  - [推荐用法](#推荐用法)
-  - [编排流程](#编排流程)
-  - [前置要求](#前置要求)
-    - [必需](#必需)
-    - [可选](#可选)
-  - [快速开始](#快速开始)
-    - [项目级使用](#项目级使用)
-    - [全局使用](#全局使用)
-    - [安装 `/context` 可选依赖](#安装-context-可选依赖)
-  - [Agent 分工](#agent-分工)
-  - [配置结构](#配置结构)
-  - [AGENTS.md 路由原则](#agentsmd-路由原则)
-  - [Plugins](#plugins)
-  - [Skills](#skills)
-  - [自定义建议](#自定义建议)
-  - [已知限制](#已知限制)
-  - [更多文档](#更多文档)
-  - [第三方项目与许可](#第三方项目与许可)
-  - [License](#license)
+上图展示的是这套配置在 OpenCode 中的实际运行状态：由一个 **Orchestrator** 负责主对话、委派边界清晰的工作，并只在完成相关验证后验收结果。
 
----
+## 为什么需要这套预设
 
-## 版本状态
+即使通用 Agent 足够强大，在长时间的软件工程任务中仍可能成为瓶颈。代码搜索结果、库文档、截图、实现细节和测试输出会争夺同一个上下文；同一个模型还要同时做到快速、富有创意、精确并保持质疑。
 
-本预设当前版本为 **v0.1.0**，处于早期迭代阶段。以下内容仍可能调整：
+OpenCode Preset 将这些职责拆开：
 
-- 配置文件的字段与默认值；
-- Agent 的模型分配和 Skills 列表；
-- 部分可选 MCP 与插件的接入方式。
+- **保护主会话上下文**：把专业 Agent 的完整执行压缩成聚焦的结果。
+- **按职责路由**：不再让一个模型包办所有工作。
+- **并行处理独立任务**：例如同时进行代码检索和外部资料调研。
+- **按影响选择验证**：使用能够证明目标行为的最小相关检查。
+- **有目的地升级**：当架构、安全或数据完整性让错误代价变高时，再交给高级审查能力。
 
-本仓库保留了部分 `@latest` 依赖引用，便于快速跟进上游；如果你需要可复现环境，建议在发布前将 `@latest` 替换为已验证的固定版本。
+## 工作如何流转
 
-## 特性
+<p align="center">
+  <img src="./assets/readme/workflow.svg" width="100%" alt="用户请求经过 Orchestrator 规划、选定的专业 Agent、验证关卡和统一交付">
+</p>
 
-- **职责明确**：Orchestrator 负责规划、调度、协调和验收，专业工作交给对应 Agent。
-- **并行执行**：互不依赖的检索、研究、实现和视觉分析任务可以并行开展。
-- **验证优先**：根据变更范围选择测试、类型检查、构建或冒烟验证，不直接采信 Agent 的完成声明。
-- **上下文控制**：通过委派、CodeGraph 和 `/context` 工具减少主会话上下文膨胀。
-- **安全边界**：共享状态写入、Git 操作和破坏性命令需要更严格的确认与防护。
-- **扩展能力**：包含前端工程、Office 文档、产品发现、图像生成和发布验证等 Skills。
+这是一种路由模型，而不是固定流水线。已知路径的小改动可以直接处理；跨领域任务则可以启动多个相互独立的执行通道。Orchestrator 会选择能够提供可信证据的最轻工作流。
 
-## 推荐用法
+## 专业 Agent 阵容
 
-> [!TIP]
-> 推荐通过 [OpenChamber](https://github.com/openchamber/openchamber) 使用 OpenCode。
+| Agent | 负责内容 | 典型交付 |
+|---|---|---|
+| **Orchestrator** | 规划、调度、边界、结果整合和验收 | 将一个请求转化为小型依赖图 |
+| **Explorer** | 代码库搜索、符号、调用链和影响范围 | 返回压缩后的仓库证据 |
+| **Librarian** | 当前文档、API、GitHub 项目和外部事实 | 返回有来源支撑的调研，而不是依赖模型记忆 |
+| **Designer** | UI/UX、响应式行为、演示文稿设计和视觉打磨 | 负责用户可见的布局和交互质量 |
+| **Fixer** | 边界明确的实现和结构化 Office 工作 | 根据具体方案完成范围受控的机械修改 |
+| **Observer** | 图片、截图、PDF 和图表 | 隔离视觉输入并返回结构化观察结果 |
+| **Oracle** | 高风险架构、持续性调试和战略审查 | 在错误选择代价很高时提供升级通道 |
+| **Fast-Generic** | Git 侦察、Lint、类型检查、测试和构建 | 在不修改代码的情况下执行常规命令验证 |
 
-![运行界面](./img/openchamber.png)
+当真正需要多模型共识且值得付出调用成本时，Council 模式会增加三个相互独立的技术席位，并执行一次综合分析。
 
-## 编排流程
+## 仓库包含什么
 
-以下只是**可能**的编排示意，Orchestrator 会按实际任务只调用相关 Agent，不会每次走完整流水线。
-
-```mermaid
-flowchart TD
-    U[用户请求] --> O[Orchestrator 规划]
-    O -->|按需委派| E[Explorer]
-    O -->|按需委派| L[Librarian]
-    O -->|按需委派| F[Fixer]
-    O -->|按需委派| D[Designer]
-    O -->|升级| R[Oracle]
-    E --> V[最小相关验证]
-    L --> V
-    F --> V
-    D --> V
-    R --> V
-    V --> O2[统一结果/交付]
+```text
+.
+├── AGENTS.md                    # 编排、路由、安全边界和验证规则
+├── opencode.json                # OpenCode 插件、MCP 和内置 Agent 覆盖配置
+├── .opencode/
+│   ├── oh-my-opencode-slim.json # 模型、专业 Skills 和 Council 配置
+│   ├── tui.json                 # 终端界面设置
+│   ├── command/                 # 自定义命令
+│   ├── plugins/                 # /context 和危险命令守卫
+│   └── skills/                  # 随仓库分发的专业工作流
+├── docs/                        # 安装、Agent、Skills、工作流和 FAQ
+└── img/                         # 真实界面截图
 ```
 
-## 前置要求
+### 能力层次
 
-### 必需
+| 层次 | 包含的能力 |
+|---|---|
+| **编排** | 委派规则、审批边界、Council、worktree、深度工作和验证规划 |
+| **代码工作** | CodeGraph 辅助检索、Vite、pnpm、Vitest、tsdown、依赖检查和发布冒烟测试 |
+| **设计与产品** | Vue/Nuxt 指南、UI 打磨、产品发现、营销心理和图标生成 |
+| **文档** | DOCX、XLSX、数据仪表盘、财务模型、学术论文、Pitch Deck 和 Morph 演示文稿 |
+| **会话安全** | 上下文用量报告、可选 Tokenizer 支持和危险命令拦截 |
 
-- [OpenCode](https://opencode.ai/)
-- [oh-my-opencode-slim](https://github.com/alvinunreal/oh-my-opencode-slim) 支持的 OpenCode 版本
-- 可用的模型 Provider
-
-默认配置使用 `opencode-go`、`kimi-for-coding` 和 `zhipuai` 下的模型。使用前请确认这些 Provider 在你的环境中可用，或编辑 [`.opencode/oh-my-opencode-slim.json`](./.opencode/oh-my-opencode-slim.json) 替换模型。
-
-### 可选
-
-| 组件 | 用途 | 未安装时的影响 |
-|---|---|---|
-| [CodeGraph](https://github.com/colbymchenry/codegraph) | 符号、调用链、依赖和影响范围查询 | `codegraph` MCP 不可用 |
-| [OfficeCLI](https://github.com/iOfficeAI/OfficeCLI) | 创建、读取和修改 Office 文档 | Office MCP 和相关 Skills 不可用 |
-| [Destructive Command Guard](https://github.com/Dicklesworthstone/destructive_command_guard) | 拦截高风险 Shell 命令 | `dcg-guard` 自动保持禁用 |
-| npm | 安装 `/context` 的 tokenizer 依赖 | `/context` 无法进行精确 Token 统计 |
-
-`websearch`、`context7` 和 `gh_grep` 由 oh-my-opencode-slim 及其运行环境提供，不是在本仓库的 `opencode.json` 中定义的本地 MCP。
+当前完整分配请查看 [Skills 说明](./docs/skills.md)和 [Agent 配置说明](./docs/agents.md)。
 
 ## 快速开始
 
-### 项目级使用
+### 1. 先在单个项目中试用
 
-克隆仓库后，将以下内容放在目标项目根目录：
+克隆本仓库，然后将以下内容复制或合并到希望由 OpenCode 处理的项目中：
 
 ```text
 your-project/
@@ -124,154 +102,72 @@ your-project/
 └── .opencode/
 ```
 
-> [!WARNING]
-> 如果目标项目已有同名配置，请先手动合并，不要直接覆盖。
-
-### 全局使用
-
-OpenCode 的全局配置目录是 `~/.config/opencode/`。全局安装时需要将仓库根目录和 `.opencode/` 中的内容合并到该目录，而不是把整个仓库原样嵌套进去：
-
-```text
-~/.config/opencode/
-├── AGENTS.md
-├── opencode.json
-├── oh-my-opencode-slim.json
-├── tui.json
-├── command/
-├── plugins/
-└── skills/
-```
-
 > [!CAUTION]
-> 不要把整个仓库复制成 `~/.config/opencode/.opencode/`，否则会产生多余的目录层级。
+> 如果目标项目已经存在同名文件，请手动合并。不要直接覆盖已有的 OpenCode 配置。
 
-建议先在单个项目中试用并完成模型替换，再合并到全局配置。详细步骤见 [安装指南](./docs/installation.md)。
+### 2. 调整模型分配
 
-### 安装 `/context` 可选依赖
+打开 [`.opencode/oh-my-opencode-slim.json`](./.opencode/oh-my-opencode-slim.json)，替换当前环境不可用或不符合预算的 Provider 和模型。
 
-在本仓库根目录运行：
+### 3. 安装 `/context` 的可选 Tokenizer 依赖
 
 ```sh
 ./.opencode/plugins/install.sh
 ```
 
-依赖会安装到被 Git 忽略的 `.opencode/plugins/vendor/` 中，不会污染项目根目录。
+依赖会安装到 `.opencode/plugins/vendor/`，并继续被 Git 忽略。
 
-> [!NOTE]
-> 修改 OpenCode 配置、Agent、Skill、Command 或 Plugin 后，需要退出并重新启动 OpenCode 才会生效。
+### 4. 重启 OpenCode
 
-## Agent 分工
+OpenCode 会在启动时加载配置文件。修改配置、Agent、Skill、Command 或 Plugin 后，请退出并重新启动 OpenCode。
 
-| Agent | 主要职责 | 默认模型 |
+全局安装、可选组件和完整检查清单请参阅[安装指南](./docs/installation.md)。
+
+<a id="前置要求"></a>
+
+## 可选集成
+
+| 组件 | 增加的能力 | 未安装时的影响 |
 |---|---|---|
-| Orchestrator | 规划、调度、协调、验收 | `kimi-for-coding/k3` |
-| Designer | UI/UX、响应式布局、视觉和交互打磨 | `opencode-go/kimi-k2.7-code` |
-| Explorer | 快速代码库检索和影响范围侦察 | `opencode-go/deepseek-v4-flash` |
-| Fixer | 边界清晰的机械实现和修复 | `opencode-go/kimi-k2.7-code` |
-| Librarian | 外部文档、API 和 GitHub 调研 | `opencode-go/deepseek-v4-flash` |
-| Observer | 图片、截图、PDF 和图表分析 | `zhipuai/glm-4.6v` |
-| Oracle | 高风险架构决策、复杂调试和审查 | `opencode-go/qwen3.7-max` |
-| Fast-Generic | Git、Lint、Typecheck、测试和构建等机械命令 | `opencode-go/deepseek-v4-flash` |
+| [CodeGraph](https://github.com/colbymchenry/codegraph) | 符号、调用链、依赖和影响范围查询 | `codegraph` MCP 不可用 |
+| [OfficeCLI](https://github.com/iOfficeAI/OfficeCLI) | 创建和检查 Office 文档 | Office MCP 及相关 Skills 不可用 |
+| [Destructive Command Guard](https://github.com/Dicklesworthstone/destructive_command_guard) | 在高风险 Shell 命令执行前进行拦截 | 本地守卫保持禁用 |
+| npm Tokenizer 软件包 | 提供更准确的 `/context` Token 计数 | `/context` 可能无法提供精确计数 |
 
-Council 使用 `opencode-go/qwen3.7-max` 进行综合，并采用内部成员预设 `default`：
+`websearch`、`context7` 和 `gh_grep` 来自 oh-my-opencode-slim 运行环境，而不是本仓库的本地 MCP 声明。
 
-| 席位 | 模型 | 关注点 |
-|---|---|---|
-| alpha | `opencode-go/glm-5.2` | 架构、正确性、系统集成 |
-| beta | `opencode-go/kimi-k2.7-code` | 实现质量、细节、边界情况 |
-| gamma | `opencode-go/kimi-k2.6` | 性能、资源、现实权衡 |
+## 通过 OpenChamber 使用
 
-这里的 `default` 是 **Council 成员预设**；当前启用的 oh-my-opencode-slim 整体预设是 `me`。
+[OpenChamber](https://github.com/openchamber/openchamber) 为 OpenCode 提供桌面界面，并会在会话开始时显示已经配置的 Orchestrator。
 
-完整分工和 Skills 配置见 [Agent 配置说明](./docs/agents.md)。
+<p align="center">
+  <img src="./assets/openchamber.png" width="100%" alt="OpenChamber 会话界面中选择 Kimi K3 作为 Orchestrator">
+</p>
 
-## 配置结构
+## 采用前需要了解的边界
 
-```text
-.
-├── AGENTS.md                         # Orchestrator 工作流和审批规则
-├── opencode.json                     # OpenCode 插件、内置 Agent 和 MCP 配置
-├── .opencode/
-│   ├── oh-my-opencode-slim.json      # Agent、模型、Skills 和 Council 配置
-│   ├── tui.json                      # TUI 配置
-│   ├── command/                      # 自定义命令
-│   ├── plugins/                      # 本地插件
-│   └── skills/                       # 随仓库分发的 Skills
-├── docs/                             # 安装和配置文档
-└── img/                              # README 图片
-```
+- 这是一套**个人偏好预设**，不是适合所有环境的开箱即用配置。
+- 部分依赖使用 `@latest`；需要可复现环境时，应固定经过验证的版本。
+- CodeGraph、OfficeCLI、DCG 和 Tokenizer 软件包需要单独安装。
+- Provider 可用性和模型价格可能变化，应根据自己的环境替换默认值。
+- 仓库分发的部分 Skills 和模板属于第三方作品，具有各自的许可证。
+- Agent 的完成报告不是证据；Orchestrator 应执行相关检查。
 
-OpenCode 自带的 `explore` 和 `general` Agent 已关闭，由本预设中的 Explorer 和专业 Agent 取代。
+## 文档导航
 
-## AGENTS.md 路由原则
-
-`AGENTS.md` 用于约束 Orchestrator，防止其绕过委派流程并自行执行全部工作。核心路由如下：
-
-| 任务 | Agent | 说明 |
-|---|---|---|
-| 外部项目、库文档、API 和时效性事实调研 | `@librarian` | 不依赖模型记忆回答可能变化的信息 |
-| 范围不明确的代码库检索、调用链与影响范围分析 | `@explorer` | 已知路径时可直接读取 |
-| 图片、截图、PDF 和图表分析 | `@observer` | 隔离多媒体内容，返回结构化观察 |
-| Office 文档内容、数据和结构化编辑 | `@fixer` | 数据、内容和机械编辑 |
-| 演示文稿视觉设计、版式与动画打磨 | `@designer` | 保留视觉层级、布局和交互意图 |
-| UI/UX、响应式布局和视觉打磨 | `@designer` | 单文件 <10 行样式微调可自行处理 |
-| 多文件机械实现或单文件预计改动 >20 行 | `@fixer` | 委派前明确文件、改法和验收结果 |
-| 高风险架构决策、复杂技术权衡和审查 | `@oracle` | 仅在错误成本较高时升级使用 |
-
-此外还定义了并行执行、审批边界、编码习惯、验证要求、沟通方式、任务收尾和异常处理流程。
-
-## Plugins
-
-| Plugin | 用途 |
+| 从这里开始 | 参考内容 |
 |---|---|
-| `context-usage.ts` | 提供 `context_usage` 工具，按角色和消息来源统计 Token 用量 |
-| `tokenizer-registry.mjs` | 根据 Provider 和模型选择 tiktoken、Transformers 或近似计数 |
-| `dcg-guard.js` | 在 Bash 执行前调用可选的 `dcg`，拦截高风险命令 |
+| [安装指南](./docs/installation.md) | 项目级和全局配置、可选依赖、冒烟检查 |
+| [工作流示例](./docs/workflows.md) | 跨文件 Bug、UI 工作、外部调研、发布检查 |
+| [Agent 配置](./docs/agents.md) | 职责、模型和委派边界 |
+| [Skills 说明](./docs/skills.md) | 随仓库分发的能力及其预期用途 |
+| [FAQ](./docs/faq.md) | 配置选择和常见失败模式 |
+| [安全说明](./SECURITY.md) | 信任和安全边界 |
+| [贡献指南](./CONTRIBUTING.md) | Issue、Skills、Commands、许可证和 Pull Request |
+| [更新日志](./CHANGELOG.md) | 发布历史 |
 
-`dcg-guard` 会在调用 `dcg` 时自动设置 `DCG_ROBOT=1`。系统中找不到 `dcg` 时，插件不会注册拦截 Hook。
+## 第三方项目与许可证
 
-## Skills
+本预设集成或基于 [OpenCode](https://opencode.ai/)、[oh-my-opencode-slim](https://github.com/alvinunreal/oh-my-opencode-slim)、[opencode-notifier](https://github.com/mohak34/opencode-notifier)、[CodeGraph](https://github.com/colbymchenry/codegraph)、[OfficeCLI](https://github.com/iOfficeAI/OfficeCLI) 和 [Destructive Command Guard](https://github.com/Dicklesworthstone/destructive_command_guard)。
 
-仓库包含编排与验证、前端工程、Office 文档、设计与产品、构建工具等多类 Skills。完整清单和用途见 [Skills 说明](./docs/skills.md)。
-
-## 自定义建议
-
-1. 在 `.opencode/oh-my-opencode-slim.json` 中替换不可用或不符合预算的模型。
-2. 删除不需要的 Skills，减少配置体积和触发噪声。
-3. 不使用 Office 能力时，可关闭 `officecli` MCP 并移除相关 Skills。
-4. 不使用 CodeGraph 时，可关闭对应 MCP；需要代码图谱的项目需自行初始化索引。
-5. 如果重视可复现性，将 `@latest` 改为经过验证的固定版本。
-
-## 已知限制
-
-- 默认模型和 Provider 具有明显的个人偏好，不保证对所有账户可用。
-- `@latest` 会自动获取插件新版本，但可能引入未经本仓库验证的行为变化。
-- CodeGraph、OfficeCLI、DCG 和 tokenizer 依赖需要单独安装。
-- 部分 Skills 和模板来自第三方项目，继续分发前应保留其原始许可证与署名。
-
-## 更多文档
-
-- [安装指南](./docs/installation.md)
-- [工作流示例](./docs/workflows.md)
-- [FAQ](./docs/faq.md)
-- [安全说明](./SECURITY.md)
-- [贡献指南](./CONTRIBUTING.md)
-- [更新日志](./CHANGELOG.md)
-- [第三方声明](./THIRD_PARTY_NOTICES.md)
-
-## 第三方项目与许可
-
-本预设基于或集成以下项目：
-
-- [OpenCode](https://opencode.ai/)
-- [oh-my-opencode-slim](https://github.com/alvinunreal/oh-my-opencode-slim)，作者 [alvinunreal](https://github.com/alvinunreal)
-- [opencode-notifier](https://github.com/mohak34/opencode-notifier)，作者 [mohak34](https://github.com/mohak34)
-- [CodeGraph](https://github.com/colbymchenry/codegraph)，作者 [colbymchenry](https://github.com/colbymchenry)
-- [OfficeCLI](https://github.com/iOfficeAI/OfficeCLI)，作者 [iOfficeAI](https://github.com/iOfficeAI)
-- [Destructive Command Guard](https://github.com/Dicklesworthstone/destructive_command_guard)，作者 [Dicklesworthstone](https://github.com/Dicklesworthstone)
-
-随仓库分发的第三方 Skills 和模板保留其各自的许可证与署名。已识别来源见 [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md)。在完成来源与许可证核对前，不应假定根目录许可证覆盖所有第三方内容。
-
-## License
-
-本仓库原创的配置、脚本和文档采用 [MIT License](./LICENSE)。第三方 Skills、模板和其他组件仍受其各自许可证约束；详见 [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md)。
+原创配置、脚本和文档采用 [MIT License](./LICENSE)。随仓库分发的第三方 Skills、模板和其他组件保留其各自条款；重新分发前请查看 [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md)。

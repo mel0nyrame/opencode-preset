@@ -1,121 +1,99 @@
-# OpenCode Preset
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="OpenCode Preset routes work through specialist agents and a verification gate">
+</p>
 
-[中文](./README_zh.md)
+<p align="center">
+  <strong>A multi-agent orchestration preset for OpenCode.</strong><br>
+  Keep the primary session focused while specialists handle retrieval, research, design, implementation, media analysis, and high-risk review.
+</p>
 
-![OpenCode Preset running interface](./img/basic.png)
-
-> An OpenCode multi-Agent orchestration preset for complex software engineering tasks.
-
-This preset assigns code retrieval, implementation, external research, design, and review to different roles through clear responsibility boundaries, parallel delegation, verification workflows, and MCP tools—preventing the main Agent from handling everything alone and exhausting context too quickly.
-
-> [!IMPORTANT]
-> This is a personal-preference configuration preset, not a universal out-of-the-box release. Default models, providers, and optional tools need to be adjusted for your environment.
+<p align="center">
+  <a href="./README_zh.md">中文</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="./docs/installation.md">Installation</a> ·
+  <a href="./docs/workflows.md">Workflows</a> ·
+  <a href="./docs/faq.md">FAQ</a>
+</p>
 
 > [!WARNING]
-> **Current version: v0.1.0 (early stage)**. Configuration interfaces, Agent model assignments, and the Skills list may continue to change.
+> **v0.1.0 is an early release.** Models, providers, optional tools, and configuration fields reflect a personal setup and should be adapted before broader use.
 
----
+## See the preset in action
 
-## Table of Contents
+<p align="center">
+  <img src="./assets/basic.png" width="100%" alt="OpenCode running the preset with Orchestrator, connected MCP tools, and specialist agents">
+</p>
 
-- [OpenCode Preset](#opencode-preset)
-  - [Table of Contents](#table-of-contents)
-  - [Version Status](#version-status)
-  - [Features](#features)
-  - [Recommended Usage](#recommended-usage)
-  - [Orchestration Flow](#orchestration-flow)
-  - [Prerequisites](#prerequisites)
-    - [Required](#required)
-    - [Optional](#optional)
-  - [Quick Start](#quick-start)
-    - [Project-level Usage](#project-level-usage)
-    - [Global Usage](#global-usage)
-    - [Install `/context` Optional Dependency](#install-context-optional-dependency)
-  - [Agent Roles](#agent-roles)
-  - [Configuration Structure](#configuration-structure)
-  - [AGENTS.md Routing Principles](#agentsmd-routing-principles)
-  - [Plugins](#plugins)
-  - [Skills](#skills)
-  - [Customization Suggestions](#customization-suggestions)
-  - [Known Limitations](#known-limitations)
-  - [More Documentation](#more-documentation)
-  - [Third-Party Projects and Licenses](#third-party-projects-and-licenses)
-  - [License](#license)
+The interface above is the configured workflow running in OpenCode: one **Orchestrator** owns the conversation, delegates bounded work, and accepts results only after relevant verification.
 
----
+## Why this preset exists
 
-## Version Status
+A capable general agent can still become the bottleneck in a long engineering task. Search results, library documentation, screenshots, implementation details, and test output all compete for the same context—and the same model is asked to be fast, creative, precise, and skeptical at once.
 
-This preset is currently at **v0.1.0** and in early iteration. The following may still change:
+OpenCode Preset separates those jobs:
 
-- Configuration file fields and default values;
-- Agent model assignments and the Skills list;
-- Integration methods for some optional MCPs and plugins.
+- **Protect the primary context** by compressing specialist work into focused results.
+- **Route by responsibility** instead of asking one model to do everything.
+- **Parallelize independent work** such as code retrieval and external research.
+- **Verify proportionately** with the narrowest check that proves the requested behavior.
+- **Escalate deliberately** when architecture, security, or data integrity makes mistakes expensive.
 
-This repository keeps some `@latest` dependency references to quickly follow upstream; if you need a reproducible environment, replace `@latest` with a verified fixed version before release.
+## How work moves
 
-## Features
+<p align="center">
+  <img src="./assets/readme/workflow.svg" width="100%" alt="A user request moves through Orchestrator planning, selected specialists, verification, and unified delivery">
+</p>
 
-- **Clear responsibilities**: Orchestrator handles planning, scheduling, coordination, and acceptance; specialized work is delegated to the corresponding Agent.
-- **Parallel execution**: Retrieval, research, implementation, and visual-analysis tasks that do not depend on each other can run in parallel.
-- **Verification-first**: Choose tests, type checks, builds, or smoke validation based on the scope of change; do not take an Agent's completion claim at face value.
-- **Context control**: Reduce main-session context inflation through delegation, CodeGraph, and the `/context` tool.
-- **Safety boundaries**: Shared-state writes, Git operations, and destructive commands require stricter confirmation and protection.
-- **Extensibility**: Includes Skills for frontend engineering, Office documents, product discovery, image generation, and release validation.
+The diagram is a routing model, not a fixed pipeline. A small known-path edit may stay local; a cross-cutting task can activate several independent lanes. The Orchestrator chooses the lightest workflow that can produce credible evidence.
 
-## Recommended Usage
+## The specialist bench
 
-> [!TIP]
-> We recommend using OpenCode through [OpenChamber](https://github.com/openchamber/openchamber).
+| Agent | Owns | Typical handoff |
+|---|---|---|
+| **Orchestrator** | Planning, scheduling, boundaries, reconciliation, acceptance | Turns one request into a small dependency graph |
+| **Explorer** | Codebase search, symbols, call chains, impact scope | Returns compressed repository evidence |
+| **Librarian** | Current documentation, APIs, GitHub projects, external facts | Returns source-backed research rather than memory |
+| **Designer** | UI/UX, responsive behavior, presentation design, visual polish | Owns user-visible layout and interaction quality |
+| **Fixer** | Bounded implementation and structured Office work | Makes scoped mechanical changes from a concrete plan |
+| **Observer** | Images, screenshots, PDFs, diagrams | Isolates visual input and returns structured observations |
+| **Oracle** | High-risk architecture, persistent debugging, strategic review | Escalation path when the cost of a wrong choice is high |
+| **Fast-Generic** | Git reconnaissance, lint, typecheck, tests, builds | Runs routine command-only validation without code edits |
 
-![Running interface](./img/openchamber.png)
+Council mode adds three independent technical seats and a synthesis step when genuine multi-model consensus is worth the cost.
 
-## Orchestration Flow
+## What is included
 
-The diagram below shows only a **possible** orchestration pattern. The Orchestrator will invoke only the Agents relevant to the actual task and will not run the full pipeline every time.
-
-```mermaid
-flowchart TD
-    U[User Request] --> O[Orchestrator Planning]
-    O -->|delegate on demand| E[Explorer]
-    O -->|delegate on demand| L[Librarian]
-    O -->|delegate on demand| F[Fixer]
-    O -->|delegate on demand| D[Designer]
-    O -->|escalate| R[Oracle]
-    E --> V[Minimum relevant validation]
-    L --> V
-    F --> V
-    D --> V
-    R --> V
-    V --> O2[Unified result / delivery]
+```text
+.
+├── AGENTS.md                    # orchestration, routing, safety, verification
+├── opencode.json                # OpenCode plugins, MCPs, built-in agent overrides
+├── .opencode/
+│   ├── oh-my-opencode-slim.json # models, specialist skills, council configuration
+│   ├── tui.json                 # terminal UI settings
+│   ├── command/                 # custom commands
+│   ├── plugins/                 # /context and destructive-command guard
+│   └── skills/                  # packaged specialist workflows
+├── docs/                        # installation, agents, skills, workflows, FAQ
+└── img/                         # real interface screenshots
 ```
 
-## Prerequisites
+### Capability layers
 
-### Required
+| Layer | Included capabilities |
+|---|---|
+| **Orchestration** | Delegation rules, approval boundaries, Council, worktrees, deep-work and verification planning |
+| **Code work** | CodeGraph-assisted retrieval, Vite, pnpm, Vitest, tsdown, dependency inspection, release smoke tests |
+| **Design & product** | Vue/Nuxt guidance, UI polish, product discovery, marketing psychology, icon generation |
+| **Documents** | DOCX, XLSX, dashboards, financial models, academic papers, pitch decks, Morph presentations |
+| **Session safety** | Context usage reporting, optional tokenizer support, destructive-command interception |
 
-- [OpenCode](https://opencode.ai/)
-- An OpenCode version supported by [oh-my-opencode-slim](https://github.com/alvinunreal/oh-my-opencode-slim)
-- An available model provider
+See the complete [Skills Guide](./docs/skills.md) and [Agent Configuration](./docs/agents.md) for the current assignments.
 
-The default configuration uses models under `opencode-go`, `kimi-for-coding`, and `zhipuai`. Please confirm these providers are available in your environment before use, or edit [`.opencode/oh-my-opencode-slim.json`](./.opencode/oh-my-opencode-slim.json) to replace the models.
+## Quick start
 
-### Optional
+### 1. Try it in one project
 
-| Component | Purpose | Impact when not installed |
-|---|---|---|
-| [CodeGraph](https://github.com/colbymchenry/codegraph) | Symbol, call-chain, dependency, and impact-scope queries | `codegraph` MCP unavailable |
-| [OfficeCLI](https://github.com/iOfficeAI/OfficeCLI) | Create, read, and modify Office documents | Office MCP and related Skills unavailable |
-| [Destructive Command Guard](https://github.com/Dicklesworthstone/destructive_command_guard) | Intercept high-risk Shell commands | `dcg-guard` automatically remains disabled |
-| npm | Install tokenizer dependencies for `/context` | `/context` cannot provide exact token counts |
-
-`websearch`, `context7`, and `gh_grep` are provided by oh-my-opencode-slim and its runtime environment, not by local MCPs defined in this repository's `opencode.json`.
-
-## Quick Start
-
-### Project-level Usage
-
-After cloning, place the following in the target project root:
+Clone this repository, then copy or merge these entries into the project you want OpenCode to use:
 
 ```text
 your-project/
@@ -124,154 +102,72 @@ your-project/
 └── .opencode/
 ```
 
-> [!WARNING]
-> If the target project already has a configuration with the same name, manually merge it first; do not overwrite directly.
-
-### Global Usage
-
-OpenCode's global configuration directory is `~/.config/opencode/`. For global installation, merge the contents of the repository root and `.opencode/` into that directory instead of nesting the entire repository:
-
-```text
-~/.config/opencode/
-├── AGENTS.md
-├── opencode.json
-├── oh-my-opencode-slim.json
-├── tui.json
-├── command/
-├── plugins/
-└── skills/
-```
-
 > [!CAUTION]
-> Do not copy the entire repository as `~/.config/opencode/.opencode/`, or you will create an extra directory level.
+> If the target project already contains files with these names, merge them manually. Do not overwrite an existing OpenCode setup.
 
-We recommend trying the preset in a single project and completing model replacement before merging it into the global configuration. Detailed steps are in the [Installation Guide](./docs/installation.md).
+### 2. Adapt the model assignments
 
-### Install `/context` Optional Dependency
+Open [`.opencode/oh-my-opencode-slim.json`](./.opencode/oh-my-opencode-slim.json) and replace providers or models that are unavailable or unsuitable for your budget.
 
-Run in the repository root:
+### 3. Install the optional `/context` tokenizer dependency
 
 ```sh
 ./.opencode/plugins/install.sh
 ```
 
-Dependencies are installed into `.opencode/plugins/vendor/`, which is ignored by Git, so they will not pollute the project root.
+The dependency is placed under `.opencode/plugins/vendor/` and remains ignored by Git.
 
-> [!NOTE]
-> After modifying OpenCode configuration, Agents, Skills, Commands, or Plugins, you must exit and restart OpenCode for the changes to take effect.
+### 4. Restart OpenCode
 
-## Agent Roles
+OpenCode loads configuration-time files at startup. Exit and restart it after changing configuration, Agents, Skills, Commands, or Plugins.
 
-| Agent | Primary Responsibility | Default Model |
+For global installation, optional components, and a complete checklist, use the [Installation Guide](./docs/installation.md).
+
+<a id="前置要求"></a>
+
+## Optional integrations
+
+| Component | What it adds | Without it |
 |---|---|---|
-| Orchestrator | Planning, scheduling, coordination, acceptance | `kimi-for-coding/k3` |
-| Designer | UI/UX, responsive layout, visual and interaction polishing | `opencode-go/kimi-k2.7-code` |
-| Explorer | Fast codebase retrieval and impact-scope reconnaissance | `opencode-go/deepseek-v4-flash` |
-| Fixer | Mechanical implementation and fixes with clear boundaries | `opencode-go/kimi-k2.7-code` |
-| Librarian | External documentation, API, and GitHub research | `opencode-go/deepseek-v4-flash` |
-| Observer | Analysis of images, screenshots, PDFs, and charts | `zhipuai/glm-4.6v` |
-| Oracle | High-risk architecture decisions, complex debugging, and review | `opencode-go/qwen3.7-max` |
-| Fast-Generic | Mechanical commands such as Git, Lint, Typecheck, tests, and builds | `opencode-go/deepseek-v4-flash` |
+| [CodeGraph](https://github.com/colbymchenry/codegraph) | Symbol, call-chain, dependency, and blast-radius queries | The `codegraph` MCP is unavailable |
+| [OfficeCLI](https://github.com/iOfficeAI/OfficeCLI) | Creation and inspection of Office documents | Office MCP and related Skills are unavailable |
+| [Destructive Command Guard](https://github.com/Dicklesworthstone/destructive_command_guard) | Preflight interception for high-risk shell commands | The local guard stays disabled |
+| npm tokenizer packages | More accurate `/context` token counts | `/context` may not provide exact counts |
 
-Council uses `opencode-go/qwen3.7-max` for synthesis and adopts the internal member preset `default`:
+`websearch`, `context7`, and `gh_grep` come from the oh-my-opencode-slim runtime rather than this repository's local MCP declarations.
 
-| Seat | Model | Focus |
-|---|---|---|
-| alpha | `opencode-go/glm-5.2` | Architecture, correctness, system integration |
-| beta | `opencode-go/kimi-k2.7-code` | Implementation quality, details, edge cases |
-| gamma | `opencode-go/kimi-k2.6` | Performance, resources, real-world tradeoffs |
+## Use it through OpenChamber
 
-Here `default` is the **Council member preset**; the currently enabled oh-my-opencode-slim overall preset is `me`.
+[OpenChamber](https://github.com/openchamber/openchamber) provides a desktop interface for OpenCode and makes the configured Orchestrator visible at session start.
 
-For the full division of labor and Skills configuration, see [Agent Configuration](./docs/agents.md).
+<p align="center">
+  <img src="./assets/openchamber.png" width="100%" alt="OpenChamber session screen with Kimi K3 selected as the Orchestrator">
+</p>
 
-## Configuration Structure
+## Boundaries before adoption
 
-```text
-.
-├── AGENTS.md                         # Orchestrator workflows and approval rules
-├── opencode.json                     # OpenCode plugins, built-in Agents, and MCP configuration
-├── .opencode/
-│   ├── oh-my-opencode-slim.json      # Agent, model, Skills, and Council configuration
-│   ├── tui.json                      # TUI configuration
-│   ├── command/                      # Custom commands
-│   ├── plugins/                      # Local plugins
-│   └── skills/                       # Skills distributed with this repository
-├── docs/                             # Installation and configuration docs
-└── img/                              # README images
-```
+- This is a **personal-preference preset**, not a universal drop-in configuration.
+- Some dependencies use `@latest`; pin verified versions when reproducibility matters.
+- CodeGraph, OfficeCLI, DCG, and tokenizer packages require separate installation.
+- Provider availability and model pricing vary; replace the defaults for your environment.
+- Some distributed Skills and templates are third-party works with their own licenses.
+- Agent completion reports are not proof: the Orchestrator is expected to run relevant checks.
 
-OpenCode's built-in `explore` and `general` Agents are disabled and replaced by this preset's Explorer and specialist Agents.
+## Documentation
 
-## AGENTS.md Routing Principles
-
-`AGENTS.md` is used to constrain the Orchestrator and prevent it from bypassing the delegation flow and doing all the work itself. The core routing is as follows:
-
-| Task | Agent | Note |
-|---|---|---|
-| External projects, library docs, APIs, and time-sensitive facts | `@librarian` | Do not answer potentially changing information from model memory |
-| Open-ended codebase search, call-chain, and impact-scope analysis | `@explorer` | Read directly when the path is known |
-| Image, screenshot, PDF, and chart analysis | `@observer` | Isolate multimedia content and return structured observations |
-| Office document content, data, and structured editing | `@fixer` | Data, content, and mechanical edits |
-| Presentation visual design, layout, and animation polishing | `@designer` | Preserve visual hierarchy, layout, and interaction intent |
-| UI/UX, responsive layout, and visual polishing | `@designer` | Self-handle for <10 line style tweaks in a single file |
-| Multi-file mechanical implementation or single-file changes expected to exceed 20 lines | `@fixer` | Clarify files, approach, and acceptance criteria before delegating |
-| High-risk architecture decisions, complex technical tradeoffs, and review | `@oracle` | Escalate only when the cost of error is high |
-
-It also defines parallel execution, approval boundaries, coding practices, verification requirements, communication style, task wrap-up, and exception handling.
-
-## Plugins
-
-| Plugin | Purpose |
+| Start here | Reference |
 |---|---|
-| `context-usage.ts` | Provides the `context_usage` tool to count Token usage by role and message source |
-| `tokenizer-registry.mjs` | Selects tiktoken, Transformers, or approximate counting based on provider and model |
-| `dcg-guard.js` | Calls the optional `dcg` before Bash execution to intercept high-risk commands |
+| [Installation](./docs/installation.md) | Project-level and global setup, optional dependencies, smoke checks |
+| [Workflow examples](./docs/workflows.md) | Cross-file bugs, UI work, external research, release checks |
+| [Agents](./docs/agents.md) | Responsibilities, models, delegation boundaries |
+| [Skills](./docs/skills.md) | Packaged capabilities and intended use |
+| [FAQ](./docs/faq.md) | Configuration choices and common failure modes |
+| [Security](./SECURITY.md) | Trust and safety boundaries |
+| [Contributing](./CONTRIBUTING.md) | Issues, Skills, Commands, licensing, pull requests |
+| [Changelog](./CHANGELOG.md) | Release history |
 
-`dcg-guard` automatically sets `DCG_ROBOT=1` when calling `dcg`. If `dcg` is not found on the system, the plugin will not register an interception hook.
+## Third-party work and license
 
-## Skills
+This preset integrates with or builds upon [OpenCode](https://opencode.ai/), [oh-my-opencode-slim](https://github.com/alvinunreal/oh-my-opencode-slim), [opencode-notifier](https://github.com/mohak34/opencode-notifier), [CodeGraph](https://github.com/colbymchenry/codegraph), [OfficeCLI](https://github.com/iOfficeAI/OfficeCLI), and [Destructive Command Guard](https://github.com/Dicklesworthstone/destructive_command_guard).
 
-The repository includes Skills for orchestration and verification, frontend engineering, Office documents, design and product, and build tools. For the full list and their purposes, see [Skills Guide](./docs/skills.md).
-
-## Customization Suggestions
-
-1. Replace unavailable or budget-unfriendly models in `.opencode/oh-my-opencode-slim.json`.
-2. Remove unneeded Skills to reduce configuration size and trigger noise.
-3. If you do not use Office capabilities, disable the `officecli` MCP and remove related Skills.
-4. If you do not use CodeGraph, disable the corresponding MCP; projects that need a code graph must initialize the index themselves.
-5. If reproducibility matters, change `@latest` to a verified fixed version.
-
-## Known Limitations
-
-- Default models and providers reflect strong personal preferences and are not guaranteed to be available for all accounts.
-- `@latest` will automatically pull new plugin versions, which may introduce behavior changes not yet validated by this repository.
-- CodeGraph, OfficeCLI, DCG, and tokenizer dependencies need to be installed separately.
-- Some Skills and templates come from third-party projects; preserve their original licenses and attribution before redistributing.
-
-## More Documentation
-
-- [Installation Guide](./docs/installation.md)
-- [Workflow Examples](./docs/workflows.md)
-- [FAQ](./docs/faq.md)
-- [Security Notice](./SECURITY.md)
-- [Contributing Guide](./CONTRIBUTING.md)
-- [Changelog](./CHANGELOG.md)
-- [Third-Party Notices](./THIRD_PARTY_NOTICES.md)
-
-## Third-Party Projects and Licenses
-
-This preset is based on or integrates the following projects:
-
-- [OpenCode](https://opencode.ai/)
-- [oh-my-opencode-slim](https://github.com/alvinunreal/oh-my-opencode-slim), by [alvinunreal](https://github.com/alvinunreal)
-- [opencode-notifier](https://github.com/mohak34/opencode-notifier), by [mohak34](https://github.com/mohak34)
-- [CodeGraph](https://github.com/colbymchenry/codegraph), by [colbymchenry](https://github.com/colbymchenry)
-- [OfficeCLI](https://github.com/iOfficeAI/OfficeCLI), by [iOfficeAI](https://github.com/iOfficeAI)
-- [Destructive Command Guard](https://github.com/Dicklesworthstone/destructive_command_guard), by [Dicklesworthstone](https://github.com/Dicklesworthstone)
-
-Third-party Skills and templates distributed with this repository retain their respective licenses and attribution. Identified sources are listed in [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md). Do not assume that the root-directory license covers all third-party content until source and license verification is complete.
-
-## License
-
-Original configuration, scripts, and documentation in this repository are licensed under the [MIT License](./LICENSE). Third-party Skills, templates, and other components remain subject to their respective licenses; see [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) for details.
+Original configuration, scripts, and documentation are licensed under the [MIT License](./LICENSE). Distributed third-party Skills, templates, and other components retain their own terms; review [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) before redistribution.
