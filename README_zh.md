@@ -10,6 +10,7 @@
 <p align="center">
   <a href="./README.md">English</a> ·
   <a href="#快速开始">快速开始</a> ·
+  <a href="./docs/daily-usage.md">日常使用</a> ·
   <a href="./docs/installation.md">安装指南</a> ·
   <a href="./docs/workflows.md">工作流</a> ·
   <a href="./docs/faq.md">FAQ</a>
@@ -157,6 +158,7 @@ OpenCode 会在启动时加载配置文件。修改配置、Agent、Skill、Comm
 
 | 从这里开始 | 参考内容 |
 |---|---|
+| [日常使用说明](./docs/daily-usage.md) | 何时依赖自动编排、点名 Skill、组合工作流以及如何验收 |
 | [安装指南](./docs/installation.md) | 项目级和全局配置、可选依赖、冒烟检查 |
 | [工作流示例](./docs/workflows.md) | 跨文件 Bug、UI 工作、外部调研、发布检查 |
 | [Agent 配置](./docs/agents.md) | 职责、模型和委派边界 |

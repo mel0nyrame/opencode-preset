@@ -1,6 +1,6 @@
 # Skills 说明
 
-> [返回 README](../README.md) · [安装指南](./installation.md) · [Agent 配置](./agents.md)
+> [返回 README](../README.md) · [日常使用](./daily-usage.md) · [安装指南](./installation.md) · [Agent 配置](./agents.md)
 
 以下为随仓库分发的 Skills。具体触发条件和操作规则以各目录中的 `SKILL.md` 为准。
 

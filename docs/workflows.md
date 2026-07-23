@@ -1,6 +1,6 @@
 # 工作流示例
 
-> [返回 README](../README.md) · [安装指南](./installation.md) · [FAQ](./faq.md)
+> [返回 README](../README.md) · [日常使用](./daily-usage.md) · [安装指南](./installation.md) · [FAQ](./faq.md)
 
 以下只是 Orchestrator 可能采用的**示例路由**，实际任务会被裁剪，不会每个 Agent 都参与。
 

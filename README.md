@@ -10,6 +10,7 @@
 <p align="center">
   <a href="./README_zh.md">中文</a> ·
   <a href="#quick-start">Quick start</a> ·
+  <a href="./docs/daily-usage.md">Daily usage</a> ·
   <a href="./docs/installation.md">Installation</a> ·
   <a href="./docs/workflows.md">Workflows</a> ·
   <a href="./docs/faq.md">FAQ</a>
@@ -157,6 +158,7 @@ For global installation, optional components, and a complete checklist, use the 
 
 | Start here | Reference |
 |---|---|
+| [Daily usage](./docs/daily-usage.md) | When to rely on orchestration, name a Skill, combine workflows, and verify results |
 | [Installation](./docs/installation.md) | Project-level and global setup, optional dependencies, smoke checks |
 | [Workflow examples](./docs/workflows.md) | Cross-file bugs, UI work, external research, release checks |
 | [Agents](./docs/agents.md) | Responsibilities, models, delegation boundaries |
