@@ -144,15 +144,8 @@
         ],
         "model": "kimi-for-coding/k3",
         "skills": [
-          "adhd",
-          "codemap",
-          "deepwork",
-          "verification-planning",
-          "worktrees",
-          "clonedeps",
-          "reflect",
-          "customize-opencode",
-          "oh-my-opencode-slim"
+          "*",
+          "!simplify"
         ]
       }
     }
